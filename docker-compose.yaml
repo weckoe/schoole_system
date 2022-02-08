@@ -1,0 +1,30 @@
+version: "3.9"
+   
+services:
+  db:
+    image: postgres:14.1
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=schoole_system_db_main
+      - POSTGRES_USER=kirill
+      - POSTGRES_PASSWORD=password
+    ports:
+      - "5432:5432"
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - POSTGRES_NAME=schoole_system_db_main
+      - POSTGRES_USER=kirill
+      - POSTGRES_PASSWORD=password
+    depends_on:
+        - db
+networks:
+    djangonetwork:
+      driver: bridge

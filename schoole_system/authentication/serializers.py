@@ -8,24 +8,35 @@ from .models import User
 class CreateUpdateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = '__all__'
-
-    def create_user(self, validated_data):
-        new_user = User.objects.create_user(**validated_data)
-        serializer = serializers.serialize('json', [new_user, ])
-        return Response(json.loads(serializer))
-
-    def update_user(self, pk, validated_data):
-        updated_user, _ = User.objects.filter(id=pk).update_or_create(**validated_data)
-        serializer = serializers.serialize('json', [updated_user, ])
-        return Response(json.loads(serializer))
+        fields = [
+            'password',
+            'last_login',
+            'is_superuser',
+            'first_name',
+            'last_name',
+            'is_staff',
+            'is_active',
+            'date_joined',
+            'id',
+            'email',
+            'image',
+        ]
+        extra_kwargs = {
+            'first_name': {'write_only': True},
+            'last_name': {'write_only': True},
+            'is_active': {'write_only': True},
+            'email': {'write_only': True},
+        }
 
 
 class ReadUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'email']
-
-    def reading_all_users(self):
-        serializer = serializers.serialize('json', User.objects.all())
-        return Response(json.loads(serializer))
+        fields = [
+            'id',
+            'first_name',
+            'last_name',
+            'is_staff',
+            'email',
+            'last_login',
+        ]

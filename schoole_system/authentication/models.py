@@ -5,13 +5,11 @@ from django.utils.translation import ugettext_lazy as _
 from .validators import user_image_resolution_check
 from django.contrib.auth.base_user import BaseUserManager
 
+
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
     def _create_user(self, email, password, **extra_fields):
-        """
-        Create and save a user with the given email, and password.
-        """
         if not email:
             raise ValueError('The given email must be set')
         user = self.model(email=email, **extra_fields)
@@ -32,8 +30,9 @@ class UserManager(BaseUserManager):
             raise ValueError('Superuser must have is_staff=True.')
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
-
         return self._create_user(email, password, **extra_fields)
+
+
 class User(AbstractUser):
     id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False

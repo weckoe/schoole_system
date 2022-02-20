@@ -1,8 +1,8 @@
 import uuid
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import ugettext_lazy as _
-from .validators import user_image_resolution_check
 from django.contrib.auth.base_user import BaseUserManager
 
 
@@ -40,14 +40,13 @@ class User(AbstractUser):
 
     username = None
     email = models.EmailField(_('email'), unique=True)
-    objects = UserManager()
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
-
     image = models.ImageField(
-        validators=[user_image_resolution_check],
         upload_to='authentication/static/img',
         verbose_name='user photo',
         null=True,
         blank=True
     )
+   
+    objects = UserManager()
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = [] 

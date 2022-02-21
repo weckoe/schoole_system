@@ -1,5 +1,4 @@
-from rest_framework import serializers, status
-from rest_framework.response import Response
+from rest_framework import serializers
 
 from django.contrib.auth.password_validation import validate_password
 from django.core.files.images import get_image_dimensions
@@ -14,7 +13,11 @@ class CreateUserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
         write_only=True, required=True, validators=[validate_password]
     )
-    password2 = serializers.CharField(write_only=True, required=True)
+    password2 = serializers.CharField(
+            write_only=True, 
+            required=True,
+            validators=[validate_password]
+    )
     
     class Meta:
         model = User
@@ -47,9 +50,7 @@ class CreateUserSerializer(serializers.ModelSerializer):
         user = User.objects.create(
             email=validated_data["email"],
             first_name=validated_data["first_name"],
-            last_name=validated_data["last_name"],
-            image=validated_data["image"],
-        )
+            last_name=validated_data["last_name"],                )        
         user.set_password(validated_data["password"])
         user.save()
 
@@ -68,7 +69,6 @@ class UpdateUserSerializer(serializers.ModelSerializer):
         }
 
     def update(self, instance, validated_data):
-        print(validated_data)
         instance.first_name = validated_data["first_name"]
         instance.last_name = validated_data["last_name"]
         instance.email = validated_data["email"]
@@ -81,16 +81,11 @@ class UpdateUserSerializer(serializers.ModelSerializer):
 class ReadUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = [
-            "last_login",
-            "is_superuser",
-            "first_name",
-            "last_name",
-            "is_staff",
-            "is_active",
-            "date_joined",
-            "id",
-            "email",
-        ]
+        fields = (
+                "email",
+                "id",
+                "first_name",
+                "last_name",
+        )
 
 

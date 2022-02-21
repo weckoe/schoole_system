@@ -10,6 +10,7 @@ from authentication.serializers import (
 )
 from authentication.models import User
 
+from django.shortcuts import get_object_or_404
 
 class UserListCreate(APIView, LimitOffsetPagination):
     queryset = User.objects.all()
@@ -23,28 +24,28 @@ class UserListCreate(APIView, LimitOffsetPagination):
         serializer = CreateUserSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return Response(status=http.HTTPStatus.ACCEPTED)
+            return Response(serializer.validated_data)
  
 
 class UserSingleUpdateDelete(APIView):
     queryset = User.objects.all()
 
     def get(self, request, pk):
-        queryset = User.objects.filter(id=pk)
-        serializer = ReadUserSerializer(
-            queryset, many=True
-        )
+        queryset = get_object_or_404(User, id=pk)
+        serializer = ReadUserSerializer(queryset)
         return Response(serializer.data)
 
     def patch(self, request, pk):
+        user = get_object_or_404(User, id=pk)
         serializer = UpdateUserSerializer(
-                instance=User.objects.get(id=pk), 
+                instance=user, 
                 data=request.data
                 )
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return Response(status=http.HTTPStatus.ACCEPTED)
+            return Response(serializer.validated_data)
 
     def delete(self, request, pk):
-        User.objects.get(id=pk).delete()
+        user = get_object_or_404(User, id=pk)
+        user.delete()
         return Response(status=http.HTTPStatus.ACCEPTED)

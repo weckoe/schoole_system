@@ -2,7 +2,10 @@ from django.urls import path
 from authentication.views import UserListCreate, UserSingleUpdateDelete
 
 
+app_name = 'authentication'
+
+
 urlpatterns = [
-        path('', UserListCreate.as_view()),
-        path('<uuid:pk>/', UserSingleUpdateDelete.as_view()),
+        path('', UserListCreate.as_view(), name='users-list'),
+        path('<uuid:pk>/', UserSingleUpdateDelete.as_view(), name='crud'),
         ]

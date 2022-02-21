@@ -1,8 +1,11 @@
-from django.urls import path, include
-from .views import UserViewSet
-from rest_framework.routers import DefaultRouter
+from django.urls import path
+from authentication.views import UserListCreate, UserSingleUpdateDelete
 
-router = DefaultRouter()
-router.register(r'users', UserViewSet, basename='user')
 
-urlpatterns = router.urls
+app_name = 'authentication'
+
+
+urlpatterns = [
+        path('', UserListCreate.as_view(), name='users-list'),
+        path('<uuid:pk>/', UserSingleUpdateDelete.as_view(), name='crud'),
+        ]

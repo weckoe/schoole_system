@@ -1,31 +1,91 @@
-import json
-from django.core import serializers
 from rest_framework import serializers
-from rest_framework.response import Response
-from .models import User
+
+from django.contrib.auth.password_validation import validate_password
+from django.core.files.images import get_image_dimensions
+
+from authentication.models import User
+
+MAX_UPLOAD_PHOTO_WIDTH = 200
+MAX_UPLOAD_PHOTO_HEIGHT = 200
 
 
-class CreateUpdateUserSerializer(serializers.ModelSerializer):
+class CreateUserSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(
+        write_only=True, required=True, validators=[validate_password]
+    )
+    password2 = serializers.CharField(
+            write_only=True, 
+            required=True,
+            validators=[validate_password]
+    )
+    
     class Meta:
         model = User
-        fields = '__all__'
+        fields = (
+            "first_name",
+            "last_name",
+            "email",
+            "password",
+            "password2",
+            "image",
+        )
 
-    def create_user(self, validated_data):
-        new_user = User.objects.create_user(**validated_data)
-        serializer = serializers.serialize('json', [new_user, ])
-        return Response(json.loads(serializer))
+    def validate(self, validated_data):
+        if validated_data["password"] != validated_data["password2"]:
+            raise serializers.ValidationError(
+                {"password": "Password fields didn't match."}
+            )
+        return validated_data
 
-    def update_user(self, pk, validated_data):
-        updated_user, _ = User.objects.filter(id=pk).update_or_create(**validated_data)
-        serializer = serializers.serialize('json', [updated_user, ])
-        return Response(json.loads(serializer))
+    def validate_image(self, image):
+        image_width, image_height = get_image_dimensions(image)
+
+        if image_width != MAX_UPLOAD_PHOTO_WIDTH or image_height != MAX_UPLOAD_PHOTO_HEIGHT:
+            raise serializers.ValidationError(
+                f'Image resolution must be {MAX_UPLOAD_PHOTO_WIDTH}x{MAX_UPLOAD_PHOTO_HEIGHT}'
+            )
+        return image
+
+    def create(self, validated_data):
+        user = User.objects.create(
+            email=validated_data["email"],
+            first_name=validated_data["first_name"],
+            last_name=validated_data["last_name"],                )        
+        user.set_password(validated_data["password"])
+        user.save()
+
+        return user
+
+
+class UpdateUserSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(required=True)
+
+    class Meta:
+        model = User
+        fields = ("first_name", "last_name", "email")
+        extra_kwargs = {
+            "first_name": {"required": True},
+            "last_name": {"required": True},
+        }
+
+    def update(self, instance, validated_data):
+        instance.first_name = validated_data["first_name"]
+        instance.last_name = validated_data["last_name"]
+        instance.email = validated_data["email"]
+
+        instance.save()
+
+        return instance
 
 
 class ReadUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'email']
+        fields = (
+                "email",
+                "id",
+                "first_name",
+                "last_name",
+        )
 
-    def reading_all_users(self):
-        serializer = serializers.serialize('json', User.objects.all())
-        return Response(json.loads(serializer))
+

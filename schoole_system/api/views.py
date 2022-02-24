@@ -1,6 +1,6 @@
 import http
 
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 from rest_framework.views import APIView 
 from rest_framework.pagination import LimitOffsetPagination
@@ -14,6 +14,7 @@ from api.serializers import (
 )
 
 from authentication.models import User
+
 
 class AssignmentList(APIView, LimitOffsetPagination):
     queryset = Assignment.objects.all()
@@ -33,13 +34,14 @@ class AssignmentList(APIView, LimitOffsetPagination):
 class  AssignmentSingleUpdateDelete(APIView):
     
     def get(self, request, pk):
-        queryset = Assignment.objects.get(id=pk)
-        serializer = ReadAssignmentSerializer(queryset)
+        assignment = get_object_or_404(Assignment, id=pk)
+        serializer = ReadAssignmentSerializer(assignment)
         return Response(serializer.data)
 
     def patch(self, request, pk):
+        assignment = get_object_or_404(Assignment, id=pk)
         serializer = UpdateAssignmentSerializer(
-                instance=Assignment.objects.get(id=pk),
+                instance=assignment,
                 data=request.data
         )
         
@@ -48,7 +50,7 @@ class  AssignmentSingleUpdateDelete(APIView):
             return Response(serializer.validated_data['teacher'].id)
 
     def delete(self, request, pk):
-        assignment = Assignment.objects.get(id=pk)
+        assignment = get_object_or_404(Assignment, id=pk)
         assignment.delete()
         return Response(status=http.HTTPStatus.ACCEPTED)
  

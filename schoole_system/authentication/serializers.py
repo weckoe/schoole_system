@@ -27,7 +27,7 @@ class CreateUserSerializer(serializers.ModelSerializer):
             "email",
             "password",
             "password2",
-            "image",
+            "is_student",
         )
 
     def validate(self, validated_data):
@@ -50,7 +50,9 @@ class CreateUserSerializer(serializers.ModelSerializer):
         user = User.objects.create(
             email=validated_data["email"],
             first_name=validated_data["first_name"],
-            last_name=validated_data["last_name"],                )        
+            last_name=validated_data["last_name"],
+            is_student=validated_data["is_student"],
+        )        
         user.set_password(validated_data["password"])
         user.save()
 
@@ -62,7 +64,7 @@ class UpdateUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ("first_name", "last_name", "email")
+        fields = ("first_name", "last_name", "email", "is_student")
         extra_kwargs = {
             "first_name": {"required": True},
             "last_name": {"required": True},
@@ -72,6 +74,7 @@ class UpdateUserSerializer(serializers.ModelSerializer):
         instance.first_name = validated_data["first_name"]
         instance.last_name = validated_data["last_name"]
         instance.email = validated_data["email"]
+        instance.is_student = validated_data["is_student"]
 
         instance.save()
 
@@ -86,6 +89,7 @@ class ReadUserSerializer(serializers.ModelSerializer):
                 "id",
                 "first_name",
                 "last_name",
+                "is_student",
         )
 
 

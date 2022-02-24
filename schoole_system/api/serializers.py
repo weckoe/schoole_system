@@ -4,6 +4,7 @@ from api.models import Assignment
 
 from authentication.models import User
 
+from django.shortcuts import get_object_or_404
 
 class ReadAssignmentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -26,9 +27,10 @@ class CreateAssignmentSerializer(serializers.ModelSerializer):
         )
 
     def create(self, validated_data):
+        user = get_object_or_404(User, id=validated_data['pk'])
         assignment = Assignment.objects.create(
             title=validated_data['title'],
-            teacher=User.objects.get(id=validated_data['pk']),
+            teacher=user,
         )
 
         assignment.save()
@@ -46,8 +48,9 @@ class UpdateAssignmentSerializer(serializers.ModelSerializer):
         )
 
     def patch(self, instance, validated_data):
+        user = get_object_or_404(User, id=validated_data['teacher'])
         instance.title = validated_data['title']
-        instance.teacher = User.objects.get(id=validated_data['teacher'])
+        instance.teacher = user
         instance.save()
 
         return instance

@@ -46,7 +46,8 @@ class User(AbstractUser):
         null=True,
         blank=True
     )
-   
+    is_student = models.BooleanField(default=True)
+
     objects = UserManager()
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = [] 

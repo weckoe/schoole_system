@@ -5,4 +5,4 @@ __pycache__/
 /data/
 .idea/
 /schoole_system/authentication/static/
-/schoole_system/tests/
+/schoole_system/api/

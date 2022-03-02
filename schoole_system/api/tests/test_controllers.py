@@ -4,7 +4,7 @@ from uuid import UUID
 from django.test import TestCase, Client
 from django.urls import reverse
 
-from api.models import Assignment, Choice
+from api.models import Assignment, Choice, Question
 from authentication.models import User
 
 
@@ -139,4 +139,106 @@ class TestChoiceView(TestCase):
         response = self.client.delete(
                     url,
                     )
+        self.assertEqual(response.status_code, http.HTTPStatus.NO_CONTENT)
+
+
+class TestQuestionView(TestCase):
+    def setUp(self):
+        self.client = Client()
+    
+        self.user = User.objects.create(
+            id=UUID('4b6ce8b2-789d-46fc-822f-7bbb4ee3956f'),
+            first_name='Kirill',
+            last_name='Lishtvan',
+            email='kirilllisthvantest@gmail.com',
+            is_student=True,
+        )
+        self.user.set_password('kirilltest123432')
+        self.user.save()
+
+        self.choices=Choice.objects.create(
+                id=1,
+                title='single choice'
+        )
+
+        self.assignment = Assignment.objects.create(
+            title = 'test assignment',
+            teacher= self.user,
+                    ) 
+                
+        self.question = Question.objects.create(
+            question='Test Question',
+            answer=self.choices,
+            assignment=self.assignment,
+            order=123,
+        )
+        self.question.choices.add(self.choices)
+        
+    def test_question_list_view(self):
+        url = reverse('api:question-list') 
+        response = self.client.get(url)
+        self.assertEqual(response.data['results'][0]['question'], self.question.question)
+
+    def test_single_question_view(self):
+        url = reverse(
+                'api:question-crud',
+                kwargs={
+                    'pk': str(self.question.id),
+                    }
+        )
+        response = self.client.get(url)
+        self.assertEqual(response.data['question'], self.question.question)
+
+    def test_question_create_view(self):
+        url = reverse(
+                'api:question-list'
+                )
+        
+        response = self.client.post(
+                url,
+                data={
+                    'question': 'Second Test',
+                    'choices': str(self.choices.id),
+                    'answer': str(self.choices.id),
+                    'assignment': str(self.assignment.id),
+                    'order': '432',
+                    }
+                )
+        self.assertEqual(response.data, 'Second Test')
+        self.assertEqual(
+                Question.objects.get(question='Second Test').question, 
+                'Second Test')
+
+    def test_update_question_view(self):
+        url = reverse(
+                'api:question-crud',
+                kwargs={
+                    'pk': str(self.question.id)
+                    }
+            )
+        response = self.client.patch(
+                url,
+                data={
+                    "id": str(self.question.id),
+                    "question": "New Test",
+                    "choices": [
+                        str(self.choices.id),
+                    ],
+                    "answer": str(self.choices.id),
+                    "assignment": str(self.assignment.id),
+                    "order": 123
+                },
+                content_type='application/json',
+        )
+        
+        self.assertEqual(response.data, 'New Test')
+    
+    def test_delete_question_view(self):
+        url = reverse(
+                'api:question-crud',
+                kwargs={
+                    'pk': str(self.question.id),
+                    }
+        )
+        response = self.client.delete(url)
         self.assertEqual(response.status_code, http.HTTPStatus.NO_CONTENT)

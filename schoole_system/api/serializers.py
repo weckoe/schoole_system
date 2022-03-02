@@ -141,10 +141,14 @@ class UpdateQuestionSerializer(serializers.ModelSerializer):
 
     def patch(self, instance, validated_data):
         instance.question = validated_data['question']
-        instance.choices = validated_data['choices'] 
         instance.answer = validated_data['answer']
         instance.assignment = validated_data['assignment']
         instance.order = validated_data['order']
+          
+
+        for k in validated_data['choices']:
+            instance.choices.add(k)
+
         instance.save()
 
         return instance

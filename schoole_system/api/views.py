@@ -71,7 +71,7 @@ class ChoiceList(APIView, LimitOffsetPagination):
         serializer = CreateChoiceSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.validated_data['question'])
+        return Response(serializer.validated_data['title'])
 
 
 class ChoiceSingleCreateUpdateDelete(APIView):

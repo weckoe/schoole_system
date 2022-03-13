@@ -1,5 +1,5 @@
 /venv/
-schoole_system/schoole_system/.env
+configuration/.env
 .idea
 __pycache__/
 /data/

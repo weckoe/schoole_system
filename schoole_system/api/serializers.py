@@ -10,11 +10,7 @@ from django.shortcuts import get_object_or_404
 class ReadAssignmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Assignment
-        fields = (
-            'title',
-            'teacher',
-            'id',
-        )
+        fields = '__all__'
 
 
 class CreateAssignmentSerializer(serializers.ModelSerializer):
@@ -55,10 +51,7 @@ class UpdateAssignmentSerializer(serializers.ModelSerializer):
 class ReadChoiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Assignment
-        fields = (
-            'title',
-            'id',
-        )
+        fields = '__all__'
 
 
 class CreateChoiceSerializer(serializers.ModelSerializer):
@@ -93,14 +86,7 @@ class UpdateChoiceSerializer(serializers.ModelSerializer):
 class ReadQuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Question
-        fields = (
-            'id',
-            'question',
-            'choices',
-            'answer',
-            'assignment',
-            'order',
-        )
+        fields = '__all__'
 
 
 class CreateQuestionSerializer(serializers.ModelSerializer):
@@ -121,7 +107,7 @@ class CreateQuestionSerializer(serializers.ModelSerializer):
             assignment=validated_data['assignment'],
             order=validated_data['order'],
         )
-        
+
         for k in validated_data['choices']:
             question.choices.add(k)
 
@@ -144,7 +130,6 @@ class UpdateQuestionSerializer(serializers.ModelSerializer):
         instance.answer = validated_data['answer']
         instance.assignment = validated_data['assignment']
         instance.order = validated_data['order']
-          
 
         for k in validated_data['choices']:
             instance.choices.add(k)

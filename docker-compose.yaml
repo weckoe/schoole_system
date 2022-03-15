@@ -1,18 +1,9 @@
 version: "3.9"
    
-services:
-  db:
-    image: postgres:14.1
-    volumes:
-      - ./data/db:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_DB=schoole_system_db_main
-      - POSTGRES_USER=kirill
-      - POSTGRES_PASSWORD=password
-    ports:
-      - "5432:5432"
+services: 
   web:
-    build: .
+    build:
+      context: .
     command: python manage.py runserver 0.0.0.0:8000
 
     volumes:
@@ -24,7 +15,42 @@ services:
       - POSTGRES_USER=kirill
       - POSTGRES_PASSWORD=password
     depends_on:
-        - db
+        - db 
+  db:
+    image: postgres:14.1
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - postgres_db=schoole_system_db_main
+      - postgres_user=kirill
+      - postgres_password=password
+    ports:
+      - "5432:5432"
+  redis:
+    image: redis:alpine
+  celery:
+    build: .
+    command: celery -A configuration worker --loglevel=info --without-gossip --without-mingle --without-heartbeat -Ofair 
+    volumes:
+      - ./project/:/usr/src/app/
+    environment:
+      - postgres_db=schoole_system_db_main
+      - postgres_user=kirill
+      - postgres_password=password
+    depends_on:
+      - redis
+  celery-beat:
+    build: .
+    command: celery -A configuration beat -l info
+    volumes:
+      - ./project/:/usr/src/app/
+    environment:
+      - postgres_db=schoole_system_db_main
+      - postgres_user=kirill
+      - postgres_password=password
+    depends_on:
+      - redis
+    
 networks:
     djangonetwork:
       driver: bridge

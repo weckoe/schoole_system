@@ -11,12 +11,9 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 import os
-import configuration.task
+
 from celery.schedules import crontab
-
 from dotenv import load_dotenv
-from datetime import timedelta
-
 
 load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -41,10 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'authentication',
+    'api',
     'rest_framework',
     'rest_framework_simplejwt',
-    'authentication.apps.AuthenticationConfig',
-    'api.apps.ApiConfig',
 ]
 
 MIDDLEWARE = [
@@ -132,9 +129,7 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
 AUTH_USER_MODEL = 'authentication.User'
-
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
@@ -146,7 +141,6 @@ REST_FRAMEWORK = {
 
 CELERY_BROKER_URL = 'redis://redis:6379/0'
 CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
-
 
 CELERY_BEAT_SCHEDULE = {
     "all_teachers": {

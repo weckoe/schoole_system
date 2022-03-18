@@ -9,7 +9,7 @@ from .factories.company import (
     QuestionFactory,
 )
 
-from api.models import Assignment, Choice, Question
+from schoole_system.api.models import Assignment, Choice, Question
 
 
 class TestAssignmentView(TestCase):

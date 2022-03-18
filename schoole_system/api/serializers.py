@@ -1,10 +1,8 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 
-from api.models import Assignment, Choice, Question
-
-from authentication.models import User
-
-from django.shortcuts import get_object_or_404
+from schoole_system.api.models import Assignment, Choice, Question
+from schoole_system.authentication.models import User
 
 
 class ReadAssignmentSerializer(serializers.ModelSerializer):

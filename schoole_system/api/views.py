@@ -1,13 +1,12 @@
 import http
 
 from django.shortcuts import get_object_or_404
-
-from rest_framework.views import APIView
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from api.models import Assignment, Choice, Question
-from api.serializers import (
+from schoole_system.api.models import Assignment, Choice, Question
+from schoole_system.api.serializers import (
     ReadAssignmentSerializer,
     CreateAssignmentSerializer,
     UpdateAssignmentSerializer,
@@ -66,7 +65,7 @@ class ChoiceList(APIView, LimitOffsetPagination):
         results = self.paginate_queryset(self.queryset, request)
         serializer = ReadChoiceSerializer(results, many=True)
         return self.get_paginated_response(serializer.data)
-    
+
     def post(self, request):
         serializer = CreateChoiceSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -104,7 +103,7 @@ class QuestionList(APIView, LimitOffsetPagination):
         results = self.paginate_queryset(self.queryset, request)
         serializer = ReadQuestionSerializer(results, many=True)
         return self.get_paginated_response(serializer.data)
-    
+
     def post(self, request):
         serializer = CreateQuestionSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)

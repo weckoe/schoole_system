@@ -1,7 +1,8 @@
 import factory
+from factory.django import DjangoModelFactory
 
 
-class UserFactory(factory.django.DjangoModelFactory):
+class UserFactory(DjangoModelFactory):
     class Meta:
         model = 'authentication.User'
 
@@ -13,24 +14,21 @@ class UserFactory(factory.django.DjangoModelFactory):
     password = factory.PostGenerationMethodCall('set_password', 'faker432143124')
 
 
-class AssignmentFactory(factory.django.DjangoModelFactory):
+class AssignmentFactory(DjangoModelFactory):
     class Meta:
         model = 'api.Assignment'
 
     title = factory.Faker('word')
 
 
-class ChoiceFactory(factory.django.DjangoModelFactory):
+class ChoiceFactory(DjangoModelFactory):
     class Meta:
         model = 'api.Choice'
 
     title = factory.Faker('word')
 
 
-user_factory = UserFactory()
-
-
-class QuestionFactory(factory.django.DjangoModelFactory):
+class QuestionFactory(DjangoModelFactory):
     class Meta:
         model = 'api.Question'
 

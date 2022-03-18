@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from api.models import Question, Choice, Assignment
+from schoole_system.api.models import Question, Choice, Assignment
 
 admin.site.register(Question)
 admin.site.register(Choice)

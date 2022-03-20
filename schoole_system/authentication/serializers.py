@@ -83,10 +83,4 @@ class UpdateUserSerializer(serializers.ModelSerializer):
 class ReadUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = (
-            "email",
-            "id",
-            "first_name",
-            "last_name",
-            "is_student",
-        )
+        fields = '__all__'

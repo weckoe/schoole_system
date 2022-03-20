@@ -15,7 +15,7 @@ services:
       - POSTGRES_NAME=schoole_system_db_main
       - POSTGRES_USER=kirill
       - POSTGRES_PASSWORD=password
-      - ALLOWED_HOSTS=localhost,127.0.0.1
+      - ALLOWED_HOSTS=*
       - SECRET_KEY=vvno_hiu+6-qbv8+4_kxly8@6@a9#(_681ewc&)fe*75u-j6+j
     depends_on:
         - db 
@@ -38,13 +38,15 @@ services:
     volumes:
       - ./project/:/usr/src/app/
     environment:
-      - postgres_db=schoole_system_db_main
-      - postgres_user=kirill
-      - postgres_password=password
-      - ALLOWED_HOSTS=localhost,127.0.0.1
+      - POSTGRES_HOST=db
+      - POSTGRES_NAME=schoole_system_db_main
+      - POSTGRES_USER=kirill
+      - POSTGRES_PASSWORD=password
+      - ALLOWED_HOSTS=*
       - SECRET_KEY=vvno_hiu+6-qbv8+4_kxly8@6@a9#(_681ewc&)fe*75u-j6+j
     depends_on:
       - redis
+      - web
 
   celery-beat:
     build: .
@@ -52,13 +54,15 @@ services:
     volumes:
       - ./project/:/usr/src/app/
     environment:
-      - postgres_db=schoole_system_db_main
-      - postgres_user=kirill
-      - postgres_password=password
-      - ALLOWED_HOSTS=localhost,127.0.0.1
+      - POSTGRES_HOST=db
+      - POSTGRES_NAME=schoole_system_db_main
+      - POSTGRES_USER=kirill
+      - POSTGRES_PASSWORD=password
+      - ALLOWED_HOSTS=*
       - SECRET_KEY=vvno_hiu+6-qbv8+4_kxly8@6@a9#(_681ewc&)fe*75u-j6+j
     depends_on:
       - redis
+      - web
     
 networks:
     djangonetwork:

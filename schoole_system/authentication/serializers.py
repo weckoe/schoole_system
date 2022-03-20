@@ -1,8 +1,9 @@
-from django.contrib.auth.password_validation import validate_password
-from django.core.files.images import get_image_dimensions
 from rest_framework import serializers
 
-from schoole_system.authentication.models import User
+from django.contrib.auth.password_validation import validate_password
+from django.core.files.images import get_image_dimensions
+
+from authentication.models import User
 
 MAX_UPLOAD_PHOTO_WIDTH = 200
 MAX_UPLOAD_PHOTO_HEIGHT = 200
@@ -13,11 +14,11 @@ class CreateUserSerializer(serializers.ModelSerializer):
         write_only=True, required=True, validators=[validate_password]
     )
     password2 = serializers.CharField(
-        write_only=True,
-        required=True,
-        validators=[validate_password]
+            write_only=True, 
+            required=True,
+            validators=[validate_password]
     )
-
+    
     class Meta:
         model = User
         fields = (
@@ -51,7 +52,7 @@ class CreateUserSerializer(serializers.ModelSerializer):
             first_name=validated_data["first_name"],
             last_name=validated_data["last_name"],
             is_student=validated_data["is_student"],
-        )
+        )        
         user.set_password(validated_data["password"])
         user.save()
 
@@ -83,4 +84,12 @@ class UpdateUserSerializer(serializers.ModelSerializer):
 class ReadUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = '__all__'
+        fields = (
+                "email",
+                "id",
+                "first_name",
+                "last_name",
+                "is_student",
+        )
+
+

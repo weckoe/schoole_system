@@ -1,10 +1,12 @@
-from http import HTTPStatus
 from uuid import UUID
+
+from http import HTTPStatus
 
 from django.test import TestCase, Client
 from django.urls import reverse
+from django.core.exceptions import ObjectDoesNotExist
 
-from schoole_system.authentication.models import User
+from authentication.models import User
 
 
 class TestUserListView(TestCase):

@@ -1,8 +1,7 @@
-/venv/
-schoole_system/schoole_system/.env
+*venv/
+configuration/.env
 .idea
 __pycache__/
 /data/
 .idea/
 /schoole_system/authentication/static/
-/schoole_system/api/

@@ -1,5 +1,5 @@
 from django.urls import path
-from authentication.views import UserListCreate, UserSingleUpdateDelete
+from schoole_system.authentication.views import UserListCreate, UserSingleUpdateDelete
 
 
 app_name = 'authentication'

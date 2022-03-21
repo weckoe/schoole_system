@@ -34,7 +34,7 @@ services:
 
   celery:
     build: .
-    command: celery -A configuration worker --loglevel=info --without-gossip --without-mingle --without-heartbeat -Ofair
+    command: celery -A school worker --loglevel=info --without-gossip --without-mingle --without-heartbeat -Ofair
     volumes:
       - ./project/:/usr/src/app/
     environment:

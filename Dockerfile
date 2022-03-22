@@ -9,8 +9,13 @@ RUN apk update && apk upgrade && apk add postgresql-dev gcc python3-dev musl-dev
 #requirements for pilllow
 RUN apk add zlib-dev jpeg-dev gcc musl-dev
 
+RUN apk add python3-dev build-base linux-headers pcre-dev
+
+RUN apk add nginx
+
 RUN pip install --upgrade pip
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 COPY . /app/
 WORKDIR /app
+

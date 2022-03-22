@@ -8,8 +8,8 @@ services:
 
     volumes:
       - .:/app
-    ports:
-      - "8000:8000"
+    expose:
+      - 8000
     environment:
       - POSTGRES_HOST=db
       - POSTGRES_NAME=schoole_system_db_main
@@ -63,7 +63,14 @@ services:
     depends_on:
       - redis
       - web
-    
+
+  nginx:
+    build: ./nginx
+    ports:
+      - 1337:80
+    depends_on:
+      - web 
+
 networks:
     djangonetwork:
       driver: bridge

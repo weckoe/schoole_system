@@ -4,7 +4,7 @@ services:
   web:
     build:
       context: .
-    command: python manage.py runserver 0.0.0.0:8000
+    command: uwsgi --http :8000 --module configuration.wsgi
 
     volumes:
       - .:/app
@@ -34,7 +34,7 @@ services:
 
   celery:
     build: .
-    command: celery -A school worker --loglevel=info --without-gossip --without-mingle --without-heartbeat -Ofair
+    command: celery -A configuration worker --loglevel=info --without-gossip --without-mingle --without-heartbeat -Ofair
     volumes:
       - ./project/:/usr/src/app/
     environment:
